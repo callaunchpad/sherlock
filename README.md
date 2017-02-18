@@ -3,11 +3,19 @@
 Sherlock is a human-centric computer vision library that provides optimized algorithms for hand tracking and face detection in real-time.
 
 ## Tasks
+### Major
 - [ ] Refactor from functional programming to OOP.
-- [ ] Implement handtracking.
+- [ ] Add utils module.
+- [ ] Add tests and bench mark with sample pictures.
 - [ ] Create official documentation.
-- [ ] Create tests.
 - [ ] Host on Amazon AWS Lambda with Kinesis Streams using Boto3.
+
+### Face Detection
+- [ ] Implement fast face detection with previous frame data cache.
+
+### Handtracking
+- [ ] Implement open palm hand tracking.
+- [ ] Train custom Haar cascades for multiple hand positions.
 
 ## Features
 
