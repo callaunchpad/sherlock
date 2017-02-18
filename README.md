@@ -2,6 +2,11 @@
 
 Sherlock is a human-centric computer vision library that provides optimized algorithms for hand tracking and face detection in real-time.
 
+## References
+* [OpenCV Samples](https://github.com/callaunchpad/OpenCV-Samples)
+* [Fast Face Tracking](https://github.com/mc-jesus/face_detect_n_track)
+* [Hand Tracking](https://simena86.github.io/blog/2013/08/12/hand-tracking-and-recognition-with-opencv/)
+
 ## Tasks
 ### Major
 - [ ] Refactor from functional programming to OOP.
