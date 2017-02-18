@@ -52,7 +52,7 @@ while True:
     else:
         faces = []
         for i in bounded_box:
-            print(i)
+            print(bounded_box)
             pre_faces = faceCascade.detectMultiScale(
                 gray[i[1]:(i[1] + i[3]), i[0]:(i[0] + i[2])],
                 scaleFactor= sF,
@@ -78,7 +78,7 @@ while True:
   #             #print "!!!!!!!!!!!!!!!!!"
 
     #cv2.cv.Flip(frame, None, 1)
-    bounded_box = []
+    #bounded_box = []
     cv2.imshow('Face Detector', frame)
     c = cv2.waitKey(7) % 0x100
     if c == 27:
