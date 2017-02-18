@@ -1,2 +1,1 @@
-import sherlock.HandTracking
-import sherlock.FaceDetection
+from .sherlock import Sherlock

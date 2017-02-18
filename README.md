@@ -15,6 +15,9 @@ Sherlock is a human-centric computer vision library that provides optimized algo
 - [ ] Create official documentation.
 - [ ] Host on Amazon AWS Lambda with Kinesis Streams using Boto3.
 
+### Sherlock
+- [ ] Convert frame to generic image in getFrame() and read().
+
 ### Face Detection
 - [ ] Implement fast face detection with previous frame data cache.
 

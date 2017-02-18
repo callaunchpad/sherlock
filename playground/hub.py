@@ -1,15 +1,11 @@
 import cv2
-from sherlock import HandTracking, FaceDetection
+from sherlock import Sherlock
 
-camera = cv2.VideoCapture(0)
+sherlock = Sherlock(0)
 
 while True:
-	_, frame = camera.read()
-	frame = cv2.flip(frame, 1)
+	frame = sherlock.read()
 	cv2.imshow('Raw Input', frame)
-
-	frame = HandTracking.detect(frame)
-	cv2.imshow('Hand Tracking', frame)
 
 	key = cv2.waitKey(30) & 0xff
 	if key == 27:
