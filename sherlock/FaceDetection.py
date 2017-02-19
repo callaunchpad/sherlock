@@ -6,6 +6,7 @@ facePath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(facePath)
 
 cap = cv2.VideoCapture(0)
+
 cap.set(3,640)
 cap.set(4,480)
 
