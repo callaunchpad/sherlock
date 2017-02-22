@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import sys
 
 facePath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(facePath)
@@ -20,20 +19,20 @@ while True:
   gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
   gray_width = len(gray[0])
   gray_height = len(gray)
-    
-  if bounded_box == []:
+
+  if not bounded_box:
     faces = faceCascade.detectMultiScale(
       gray,
-      scaleFactor= sF,
-      minNeighbors=8,
+      scaleFactor=sF,
+      minNeighbors=10,
       minSize=(55, 55),
       flags=cv2.CASCADE_SCALE_IMAGE
     )
     for face in faces:
-      sub_box = [int(face[0] - face[2]/2),
-                                int(face[1] - face[3]/2),
-                                int(face[2]*2),
-                                int(face[3]*2)
+      sub_box = [int(face[0] - face[2]/4),
+                                int(face[1] - face[3]/4),
+                                int(face[2]*1.5),
+                                int(face[3]*1.5)
       ]
       # ---- Out of bounds checking
       if sub_box[0] < 0:
@@ -48,28 +47,27 @@ while True:
         sub_box[3] = gray_height - sub_box[1] - 1
       bounded_box.append(sub_box)
   else:
-    try:
-      faces = []
-      for i in bounded_box:
-        cv2.imshow("heh", gray[i[1]:(i[1] + i[3]), i[0]:(i[0] + i[2])])
-        pre_faces = faceCascade.detectMultiScale(
-          gray[i[1]:(i[1] + i[3]), i[0]:(i[0] + i[2])],
-          scaleFactor= sF,
-          minNeighbors=8,
-          minSize=(55, 55),
-          flags=cv2.CASCADE_SCALE_IMAGE
-        )
-        faces = faces + np.tolist(pre_faces)
-    except AttributeError:
-      print("no bounded box")
-      faces = faceCascade.detectMultiScale(
-        gray,
-        scaleFactor= sF,
-        minNeighbors=8,
+    # try:
+    faces = []
+    for i in bounded_box:
+      adjustments = [i[0], i[1]]
+      mini_gray = gray[i[1]:(i[1] + i[3]), i[0]:(i[0] + i[2])]
+      cv2.imshow('bounded box', mini_gray)
+      pre_faces = faceCascade.detectMultiScale(
+        mini_gray,
+        scaleFactor=sF,
+        minNeighbors=10,
         minSize=(55, 55),
         flags=cv2.CASCADE_SCALE_IMAGE
       )
-  print("break")
+      if isinstance(pre_faces, tuple):
+        print("no face found")
+        continue
+      pre_faces = list(pre_faces[0])
+      pre_faces[0] += adjustments[0]
+      pre_faces[1] += adjustments[1]
+      faces += [pre_faces]
+  print("frame")
 
   # ---- Draw a rectangle around the faces
   for (x, y, w, h) in faces:
@@ -79,7 +77,7 @@ while True:
   for (x, y, w, h) in bounded_box:
     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-  cv2.imshow("Face Detector", frame)
+  cv2.imshow('Face Detector', frame)
   c = cv2.waitKey(7) % 0x100
   if c == 27:
       break
