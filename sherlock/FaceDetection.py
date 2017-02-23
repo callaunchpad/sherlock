@@ -10,22 +10,26 @@ cap.set(3,640)
 cap.set(4,480)
 
 sF = 1.05
+mN = 20
 
 past_first_frame = False
-bounded_box = []
+new_face = 0
 
 while True:
 	ret, frame = cap.read()
 	img = frame
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
 	gray_width = len(gray[0])
 	gray_height = len(gray)
 
-	if not bounded_box:
+	bounded_box = []
+
+	if (not bounded_box) or (not new_face%20):
 		faces = faceCascade.detectMultiScale(
 		gray,
 		scaleFactor=sF,
-		minNeighbors=10,
+		minNeighbors=mN,
 		minSize=(55, 55),
 		flags=cv2.CASCADE_SCALE_IMAGE
 		)
@@ -54,7 +58,7 @@ while True:
 			pre_faces = faceCascade.detectMultiScale(
 				mini_gray,
 				scaleFactor=sF,
-				minNeighbors=10,
+				minNeighbors=mN,
 				minSize=(55, 55),
 				flags=cv2.CASCADE_SCALE_IMAGE
 			)
@@ -83,6 +87,7 @@ while True:
 				sub_box[3] = gray_height - sub_box[1] - 1
 			bounded_box_temp.append(sub_box)
 
+		new_face += 1
 	print("frame")
 
 	# ---- Draw a rectangle around the faces
@@ -94,8 +99,6 @@ while True:
 		cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
 	if past_first_frame:
-		print(bounded_box)
-		print(bounded_box_temp)
 		bounded_box = bounded_box_temp
 
 	cv2.imshow('Face Detector', frame)
