@@ -75,8 +75,8 @@ class HandTracker:
 	parameters: frame - cv2 Matrix 
 	returns: img - cv2 Matrix
 	"""
-	def detect(frame):
-	    handContour = findHand(frame)
-
 	def detect(self, frame):
 		return Hand()
+
+	def visualize(self, frame):
+		return frame
