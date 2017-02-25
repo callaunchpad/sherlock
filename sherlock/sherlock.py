@@ -21,10 +21,10 @@ class Sherlock:
 		return self.faceDetector.detect(self.frame)
 
 	def getHandVisual(self):
-		return self.handTracker.visualize(self.frame)
+		return self.handTracker.visualize(self.frame.copy())
 
 	def getFaceVisual(self):
-		return self.faceDetector.visualize(self.frame)
+		return self.faceDetector.visualize(self.frame.copy())
 
 	def getFrame(self):
 		return self.frame
