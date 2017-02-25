@@ -1,7 +1,7 @@
 import cv2
 from sherlock import Sherlock
 
-sherlock = Sherlock(1)
+sherlock = Sherlock(0)
 
 while True:
 	frame = sherlock.read()
