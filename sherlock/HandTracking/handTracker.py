@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 
+from sherlock.HandTracking import Hand
+
 class HandTracker:
 	def __init__(self):
 		pass
