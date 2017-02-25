@@ -6,7 +6,7 @@ class FaceDetector:
 		pass
 
 	def detect(self, frame):
-		facePath = "Data/haarcascade_frontalface_default.xml"
+		facePath = "data/haarcascade_frontalface_default.xml"
 		faceCascade = cv2.CascadeClassifier(facePath)
 
 		cap = cv2.VideoCapture(0)
