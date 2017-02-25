@@ -10,9 +10,10 @@ class HandTracker:
 	### IMAGE FILTERING
 
 	def findCentroid(self, contour):
-		m = cv2.moments(contour)
-		centroid = (int(m['m10']/m['m00']), int(m['m01']/m['m00']))
-		return centroid
+		# m = cv2.moments(contour)
+		# centroid = (int(m['m10']/m['m00']), int(m['m01']/m['m00']))
+		# return centroid
+		return contour[0]
 
 	def findComplexContour(self, contours):
 		maxPoints = 0
