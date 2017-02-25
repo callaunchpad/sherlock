@@ -39,10 +39,12 @@ class HandTracker:
 
 	def findHand(self, frame):
 		hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-		min_threshold = np.array([0, 0, 0]) # np.array([0, 51, 40])
-		max_threshold = np.array([255, 255, 255])# np.array([19, 174, 121])
+		min_threshold = np.array([0, 35, 105])
+		max_threshold = np.array([20, 116, 237])
 		mask = self.filterImage(frame, min_threshold, max_threshold)
 		filtered, contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		if len(contours) == 0:
+			return False
 		handContour = self.largestContour(contours)
 		return handContour
 
@@ -67,10 +69,14 @@ class HandTracker:
 
 	def detect(self, frame):
 		contour = self.findHand(frame)
+		if contour == False:
+			return Hand()
 		defects, fingerLocations, centroid = self.analyzeOpenPalm(contour)
 		return Hand(contour, defects, fingerLocations, centroid)
 
 	def visualize(self, frame):
 		hand = self.detect(frame)
+		if hand.numOfHands == 0:
+			return frame
 		cv2.drawContours(frame, [hand.contour], -1, (0, 255, 0), 3)
 		return frame

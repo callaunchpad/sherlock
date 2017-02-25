@@ -14,5 +14,4 @@ while True:
 	if key == 27:
 		break
 
-camera.release()
 cv2.destroyAllWindows()
