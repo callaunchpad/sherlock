@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from .face import Face
 
 class FaceDetector:
 	def __init__(self):
@@ -9,7 +10,9 @@ class FaceDetector:
 	def visualize(self, frame):
 		"""Gives information about the bounding box as well
 		as face detection."""
-		faces, bounded_box = self.detect(frame)
+		obj_face = self.detect(frame)
+		faces = obj_face.faces
+		bounded_box = obj_face.bounded_box
 		# Draw a rectangle around the faces
 		for (x, y, w, h) in faces:
 			cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
@@ -104,7 +107,7 @@ class FaceDetector:
 
 		self.previous = bounded_box
 
-		return faces, bounded_box
+		return Face(faces, bounded_box)
 
 	def grayscale(self, frame):
 		# Retrieve grayscale frame with threshold
