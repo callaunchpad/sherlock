@@ -79,5 +79,4 @@ class HandTracker:
 	    handContour = findHand(frame)
 
 	def detect(self, frame):
-		    
 		return Hand()
