@@ -10,9 +10,10 @@ class HandTracker:
 	### IMAGE FILTERING
 
 	def findCentroid(self, contour):
-		m = cv2.moments(contour)
-		centroid = (int(m['m10']/m['m00']), int(m['m01']/m['m00']))
-		return centroid
+		# m = cv2.moments(contour)
+		# centroid = (int(m['m10']/m['m00']), int(m['m01']/m['m00']))
+		# return centroid
+		return contour[0]
 
 	def findComplexContour(self, contours):
 		maxPoints = 0
@@ -44,7 +45,7 @@ class HandTracker:
 		mask = self.filterImage(frame, min_threshold, max_threshold)
 		filtered, contours, hierarchy = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		if len(contours) == 0:
-			return False
+			return []
 		handContour = self.largestContour(contours)
 		return handContour
 
@@ -69,10 +70,10 @@ class HandTracker:
 
 	def detect(self, frame):
 		contour = self.findHand(frame)
-		if contour == False:
+		if len(contour) == 0:
 			return Hand()
 		defects, fingerLocations, centroid = self.analyzeOpenPalm(contour)
-		return Hand(contour, defects, fingerLocations, centroid)
+		return Hand(contour, defects, fingerLocations, centroid, 1)
 
 	def visualize(self, frame):
 		hand = self.detect(frame)
