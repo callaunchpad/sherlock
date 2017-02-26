@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sherlock 1.0.1 Documentation &#8212; Sherlock 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Sherlock 1.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sherlock-1-0-1-documentation">
+<h1>Sherlock 1.0.1 Documentation<a class="headerlink" href="#sherlock-1-0-1-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="welcome-this-is-the-documentation-for-sherlock-1-0-1">
+<h2>Welcome! This is the documentation for Sherlock 1.0.1.<a class="headerlink" href="#welcome-this-is-the-documentation-for-sherlock-1-0-1" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-sherlock"></span><dl class="class">
+<dt id="sherlock.Sherlock">
+<em class="property">class </em><code class="descclassname">sherlock.</code><code class="descname">Sherlock</code><span class="sig-paren">(</span><em>video</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sherlock/sherlock.html#Sherlock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sherlock.Sherlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hand and Face Recognition object. Input parameter video is a int 
+representing the video feed channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sherlock</span> <span class="k">import</span> <span class="n">Sherlock</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sherlock</span> <span class="o">=</span> <span class="n">Sherlock</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">frame</span> <span class="o">=</span> <span class="n">sherlock</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">hand</span> <span class="o">=</span> <span class="n">sherlock</span><span class="o">.</span><span class="n">getHand</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">face</span> <span class="o">=</span> <span class="n">sherlock</span><span class="o">.</span><span class="n">getFace</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="c1">#possibly do something with face/hand data, for now we will just show the raw input frame</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;Raw Input&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="k">break</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="sherlock.Sherlock.getFace">
+<code class="descname">getFace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sherlock/sherlock.html#Sherlock.getFace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sherlock.Sherlock.getFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a face object for the current frame containing face
+information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">face object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Face</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sherlock.Sherlock.getFrame">
+<code class="descname">getFrame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sherlock/sherlock.html#Sherlock.getFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sherlock.Sherlock.getFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current frame</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">3-channel matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sherlock.Sherlock.getHand">
+<code class="descname">getHand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sherlock/sherlock.html#Sherlock.getHand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sherlock.Sherlock.getHand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a hand object for the current frame containing hand
+information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">hand object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">Hand</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sherlock.Sherlock.read">
+<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sherlock/sherlock.html#Sherlock.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sherlock.Sherlock.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the next frame from the video-stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the next frame</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">3-channel matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Sherlock 1.0.1 Documentation</a><ul>
+<li><a class="reference internal" href="#welcome-this-is-the-documentation-for-sherlock-1-0-1">Welcome! This is the documentation for Sherlock 1.0.1.</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Sherlock 1.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, LaunchPad.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
+    </div>
+  </body>
+</html>
