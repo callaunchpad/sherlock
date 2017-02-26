@@ -60,6 +60,9 @@ class Sherlock:
         """
 		return self.faceDetector.detect(self.frame)
 
+	def getFaceVisual(self):
+		return self.faceDetector.visualize(self.frame)
+
 	def getFrame(self):
 		"""
         Returns the current frame.
@@ -68,3 +71,6 @@ class Sherlock:
         :rtype: 3-channel matrix 
         """
 		return self.frame
+
+	def release(self):
+		self.video.release()

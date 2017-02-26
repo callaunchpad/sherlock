@@ -1,117 +1,128 @@
 import cv2
-import numpy as np
+from .face import Face
 
 class FaceDetector:
 	def __init__(self):
-		pass
+		self.previous_face_data = None
+		self.refresh_rate = 0
+
+	def visualize(self, frame):
+		"""Gives information about the bounding box as well
+		as face detection."""
+		face_data = self.detect(frame)
+		faces = face_data.faces
+		local_regions = face_data.local_regions
+
+		# Draw a rectangle around the faces
+		for (x, y, w, h) in faces:
+			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+		# Draw a rectangle around the bounded box
+		for (x, y, w, h) in local_regions:
+			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+		return frame
 
 	def detect(self, frame):
-		facePath = "Data/haarcascade_frontalface_default.xml"
-		faceCascade = cv2.CascadeClassifier(facePath)
+		"""Returns an object with information about the frame,
+		bounding box, and the location of the face."""
+		face_path = "sherlock/data/haarcascade_frontalface_default.xml"
+		face_cascade = cv2.CascadeClassifier(face_path)
 
-		cap = cv2.VideoCapture(0)
+		# Adds 1 to number of frames since last refresh.
+		self.refresh_rate += 1
 
-		cap.set(3,640)
-		cap.set(4,480)
-
+		# Parameters for Haar Cascade
 		sF = 1.05
-		mN = 20
+		mN = 3
 
-		past_first_frame = False
-		new_face = 0
+		gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		gray_frame_width = len(gray_frame[0])
+		gray_frame_height = len(gray_frame)
 
-		while True:
-			ret, frame = cap.read()
-			img = frame
-			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		local_regions = []
 
-			gray_width = len(gray[0])
-			gray_height = len(gray)
-
-			bounded_box = []
-
-			if (not bounded_box) or (not new_face%20):
-				faces = faceCascade.detectMultiScale(
-				gray,
-				scaleFactor=sF,
-				minNeighbors=mN,
-				minSize=(55, 55),
-				flags=cv2.CASCADE_SCALE_IMAGE
-				)
-				for face in faces:
-					sub_box = [int(face[0] - face[2]/4),
-								int(face[1] - face[3]/4),
-								int(face[2]*1.5),
-								int(face[3]*1.5)
-					]
-					# ---- Out of bounds checking
-					if sub_box[0] < 0:
-						sub_box[0] = 0
-					if sub_box[1] < 0:
-						sub_box[1] = 0
-					if (sub_box[0] + sub_box[2]) > gray_width:
-						sub_box[2] = gray_width - sub_box[0] - 1
-					if (sub_box[1] + sub_box[3]) > gray_height:
-						sub_box[3] = gray_height - sub_box[1] - 1
-					bounded_box.append(sub_box)
+		if self.previous_face_data:
+			search_regions = self.previous_face_data.local_regions
+			if len(search_regions) == 0:
+				refresh_threshold = 5
 			else:
-				past_first_frame = True
-				faces = []
-				for i in bounded_box:
-					adjustments = [i[0], i[1]]
-					mini_gray = gray[i[1]:(i[1] + i[3]), i[0]:(i[0] + i[2])]
-					pre_faces = faceCascade.detectMultiScale(
-						mini_gray,
-						scaleFactor=sF,
-						minNeighbors=mN,
-						minSize=(55, 55),
-						flags=cv2.CASCADE_SCALE_IMAGE
-					)
-					if isinstance(pre_faces, tuple):
-						print("no face found")
-						continue
-					pre_faces = list(pre_faces[0])
-					pre_faces[0] += adjustments[0]
-					pre_faces[1] += adjustments[1]
-					faces += [pre_faces]
-				bounded_box_temp = []
-				for face in faces:
-					sub_box = [int(face[0] - face[2]/4),
-								int(face[1] - face[3]/4),
-								int(face[2]*1.5),
-								int(face[3]*1.5)
-					]
-					# ---- Out of bounds checking
-					if sub_box[0] < 0:
-						sub_box[0] = 0
-					if sub_box[1] < 0:
-						sub_box[1] = 0
-					if (sub_box[0] + sub_box[2]) > gray_width:
-						sub_box[2] = gray_width - sub_box[0] - 1
-					if (sub_box[1] + sub_box[3]) > gray_height:
-						sub_box[3] = gray_height - sub_box[1] - 1
-					bounded_box_temp.append(sub_box)
+				refresh_threshold = 20
 
-				new_face += 1
-			print("frame")
+		# Scan frame on refresh
+		if (not self.previous_face_data or self.refresh_rate > refresh_threshold):
+			faces = face_cascade.detectMultiScale(
+				gray_frame,
+				scaleFactor = sF,
+				minNeighbors = mN,
+				minSize = (55, 55),
+				flags = cv2.CASCADE_SCALE_IMAGE
+			)
 
-			# ---- Draw a rectangle around the faces
-			for (x, y, w, h) in faces:
-				cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+			for face in faces:
+				local_region = [
+					int(face[0] - face[2] / 4),
+					int(face[1] - face[3] / 4),
+					int(face[2] * 1.5),
+					int(face[3] * 1.5)
+				]
 
-			# ---- Draw a rectangle around the bounded box
-			for (x, y, w, h) in bounded_box:
-				cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+				# Out of bounds checking
+				if local_region[0] < 0:
+					local_region[0] = 0
+				if local_region[1] < 0:
+					local_region[1] = 0
+				if (local_region[0] + local_region[2]) > gray_frame_width:
+					local_region[2] = gray_frame_width - local_region[0] - 1
+				if (local_region[1] + local_region[3]) > gray_frame_height:
+					local_region[3] = gray_frame_height - local_region[1] - 1
+				local_regions.append(local_region)
+				self.refresh_rate = 0
+		else:
+			faces = []
+			for (x, y, w, h) in search_regions:
+				gray_search_region = gray_frame[y:(y + h), x:(x + w)]
+				detected_faces = face_cascade.detectMultiScale(
+					gray_search_region,
+					scaleFactor = sF,
+					minNeighbors = mN,
+					minSize = (55, 55),
+					flags = cv2.CASCADE_SCALE_IMAGE
+				)
+				if len(detected_faces) == 0:
+					print("no face found")
+					continue
+				face = detected_faces[0]
+				face[0] += x
+				face[1] += y
+				faces.append(face)
 
-			if past_first_frame:
-				bounded_box = bounded_box_temp
+			# Create a bounding box for each face detected
+			for face in faces:
+				local_region = [
+					int(face[0] - face[2] / 4),
+					int(face[1] - face[3] / 4),
+					int(face[2] * 1.5),
+					int(face[3] * 1.5)
+				]
+				# Out of bounds checking
+				if local_region[0] < 0:
+					local_region[0] = 0
+				if local_region[1] < 0:
+					local_region[1] = 0
+				if (local_region[0] + local_region[2]) > gray_frame_width:
+					local_region[2] = gray_frame_width - local_region[0] - 1
+				if (local_region[1] + local_region[3]) > gray_frame_height:
+					local_region[3] = gray_frame_height - local_region[1] - 1
+				local_regions.append(local_region)
 
-			cv2.imshow('Face Detector', frame)
-			c = cv2.waitKey(7) % 0x100
-			if c == 27:
-				break
+		face_data = Face(faces, local_regions)
+		self.previous_face_data = face_data
+		return face_data
 
-		cap.release()
-		cv2.destroyAllWindows()
-
-		return Face()
+	def processFrame(self, frame):
+		# Retrieve grayscale frame with threshold
+		gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+		# Apply median blur
+		gray_frame = cv2.medianBlur(gray_frame, 2)
+		return gray_frame
