@@ -1,4 +1,5 @@
 import cv2
+
 from sherlock.FaceDetection import *
 from sherlock.HandTracking import *
 
@@ -60,8 +61,11 @@ class Sherlock:
         """
 		return self.faceDetector.detect(self.frame)
 
+	def getHandVisual(self):
+		return self.handTracker.visualize(self.frame.copy())
+
 	def getFaceVisual(self):
-		return self.faceDetector.visualize(self.frame)
+		return self.faceDetector.visualize(self.frame.copy())
 
 	def getFrame(self):
 		"""
