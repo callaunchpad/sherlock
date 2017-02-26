@@ -28,3 +28,6 @@ class Sherlock:
 
 	def getFrame(self):
 		return self.frame
+
+	def release(self):
+		self.video.release()
