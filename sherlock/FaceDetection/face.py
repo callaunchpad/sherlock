@@ -1,4 +1,4 @@
 class Face:
-	def __init__(self, faces, bounded_box):
+	def __init__(self, faces, local_regions):
 		self.faces = faces
-		self.bounded_box = bounded_box
+		self.local_regions = local_regions
