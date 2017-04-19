@@ -1,3 +1,20 @@
 {
+	"dataset_dir":,
+	"model_dir":,
+
+	"im_width":,
+	"im_height":,
+	"im_channels":,
+
+	"train_batch_size":,
+	"val_batch_size":,
+
+	"num_gpus":,
+	"num_prepreocess_threads":,
+
+	"num_epoch":,
 	
+	"architecture": {
+
+	}
 }

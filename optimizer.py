@@ -1,24 +1,25 @@
 '''
-authors: vishal satish, darren lee 
-hello peter 
+Authors: Vishal Satish, Darren Lee 
+Script for training foodcnn's 
 '''
 
 import mxnet as mx
 import json
 import os
 import logging
+import numpy as np
 
+SEED = 12345678
 
-def read_data_params(self, config):
-	''' reads json file config and sets up parameters '''
-	# TODO: generalize to any dictionary input, not just json
-	self.logger.info("reading data params")
-	with open(config) as data_file:
-		self.cfg = json.load(data_file)
+def read_data_params(self, cfg):
+	''' Reads network architecture and optimization parameters
+	from input dictionary '''
+	self.logger.info("Reading data params")
 
 	self.architecture = self.cfg['architecture']
 
 	self.dataset_dir = self.cfg['dataset_dir']
+	self.model_dir = self.cfg['model_dir']
 	self.im_width = self.cfg['im_width']
 	self.im_height = self.cfg['im_height']
 	self.im_channels = self.cfg['im_channels']
@@ -27,6 +28,8 @@ def read_data_params(self, config):
 	self.val_batch_size = self.cfg['val_batch_size']
 
 	self.num_gpus = self.cfg['num_gpus']
+	self.num_preprocess_threads = self.cfg['num_preprocess_threads']
+
 	self.num_epoch = self.cfg['num_epoch']
 	self.learning_rate = self.cfg['learning_rate']
 	self.optimizer = self.cfg['optimizer']
@@ -55,13 +58,13 @@ def read_data_params(self, config):
 
 def setup(self, config):
 	''' main setup function '''
-	self.logger.info("beginning setup")
+	self.logger.info("Beginning setup")
 	self.read_data_params(config)
 	self.setup_data_iters()
 
 def setup_data_iters(self):
 	''' sets up the training and validation iterators '''
-	self.logger.info("setting up data iterators")
+	self.logger.info("Setting up data iterators")
 	self.train_iter = mx.io.ImageRecordIter(
     # Dataset Parameter, indicating the data file, please check the data is already there
     path_imgrec=os.path.join(self.dataset_dir, 'train.rec'),
@@ -72,7 +75,7 @@ def setup_data_iters(self):
     # Augmentation Parameter, randomly shuffle the data
     shuffle=True,
     # Backend Parameter, preprocessing thread number
-    preprocess_threads=4,
+    preprocess_threads=self.num_preprocess_threads,
     # Backend Parameter, prefetch buffer size
     prefetch_buffer=1)
 
@@ -86,7 +89,7 @@ def setup_data_iters(self):
     # Augmentation Parameter, randomly shuffle the data
     shuffle=True,
     # Backend Parameter, preprocessing thread number
-    preprocess_threads=4,
+    preprocess_threads=self.num_preprocess_threads,
     # Backend Parameter, prefetch buffer size
     prefetch_buffer=1)
 
@@ -94,6 +97,7 @@ def build_square_filter(self, size):
 	return (size, size)
 
 def build_network(self, input_im_node):
+	self.logger.info("Building network")
 	# conv1
 	conv1 = buildConvolution(input_node=input_im_node, 
 		num_filter=self.conv1_num_filter, 
@@ -128,6 +132,7 @@ def build_network(self, input_im_node):
 def buildConvolution(input_node, num_filter, conv_kernel, pool_kernel, conv_stride=(1,1), 
 	pad=(0, 0), apply_norm=False, act_type='relu', pool_type='max', 
 	pool_stride=(1,1), name=None, suffix=''):
+	self.logger.info("Building Convolution: " + name)
     conv = mx.symbol.Convolution(data=input_node, 
     	num_filter=num_filter, 
     	kernel=conv_kernel, 
@@ -150,7 +155,7 @@ def buildConvolution(input_node, num_filter, conv_kernel, pool_kernel, conv_stri
     return pool
 
 def optimize(self):
-	# TODO: add more params to self.model
+	self.logger.info("Beginning optimization loop")
 	self.model = mx.model.FeedForward(
 		ctx=[mx.gpu(int(i)) for i in range(self.num_gpus)], 
 		symbol=self.symbol, 
@@ -164,18 +169,28 @@ def optimize(self):
 			self.train_batch_size, 
 			self.train_log_frequency),
 		eval_metric=self.eval_metric)
-	logger.info("final validation accuracy: %s" %(self.model.score(self.val_iter)))
+	logger.info("Final validation accuracy: %s" %(self.model.score(self.val_iter)))
 
-def cleanup(self):
+
+def save_and_exit(self):
+	self.logger.info("Saving and exiting")
 	# TODO: cleanup here
+	save_dir = os.path.join(model_dir, "food-cnn")
+	iteration = self.random_generator(0, 1000, 1)[0]
+	self.model.save(save_dir, iteration)
+	exit(0)
 
 def __main__():
 	''' main run loop '''
 	self.logger = logging.getLogger('optimizer')
 	self.logger.setLevel(logging.INFO)
-	self.logger.info("beginning setup")
-	self.setup('config.json') #TODO: json file 
+	self.random_generator = np.random.RandomState(SEED)
+	self.logger.info("Beginning setup for optimization")
+	config_filename = "config.json"
+	with open(config_filename) as data_file:
+		self.config_file = json.load(data_file)
+	self.setup(self.config_file)  
 	self.build_network()
 	self.optimize()
-	self.cleanup()
+	self.save_and_exit()
 
