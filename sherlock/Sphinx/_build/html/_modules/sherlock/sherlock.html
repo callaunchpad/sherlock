@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sherlock.sherlock &#8212; Sherlock 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Sherlock 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sherlock.sherlock</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">from</span> <span class="nn">FaceDetection</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">HandTracking</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Sherlock"><a class="viewcode-back" href="../../index.html#sherlock.Sherlock">[docs]</a><span class="k">class</span> <span class="nc">Sherlock</span><span class="p">:</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Hand and Face Recognition object. Input parameter video is a int </span>
+<span class="sd">	representing the video feed channel.</span>
+<span class="sd">	</span>
+<span class="sd">	:Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; import cv2</span>
+<span class="sd">        &gt;&gt;&gt; from sherlock import Sherlock</span>
+<span class="sd">        &gt;&gt;&gt; sherlock = Sherlock(0)</span>
+<span class="sd">        &gt;&gt;&gt; while True:</span>
+<span class="sd">        &gt;&gt;&gt; 	frame = sherlock.read()</span>
+<span class="sd">        &gt;&gt;&gt;		hand = sherlock.getHand()</span>
+<span class="sd">        &gt;&gt;&gt;		face = sherlock.getFace()</span>
+<span class="sd">        &gt;&gt;&gt;     #possibly do something with face/hand data, for now we will just show the raw input frame</span>
+<span class="sd">        &gt;&gt;&gt; 	cv2.imshow(&#39;Raw Input&#39;, frame)</span>
+<span class="sd">        &gt;&gt;&gt; key = cv2.waitKey(30) &amp; 0xff</span>
+<span class="sd">        &gt;&gt;&gt; if key == 27:</span>
+<span class="sd">        &gt;&gt;&gt; 	break</span>
+<span class="sd">        &gt;&gt;&gt; camera.release()</span>
+<span class="sd">        &gt;&gt;&gt; cv2.destroyAllWindows()</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">video</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">faceDetector</span> <span class="o">=</span> <span class="n">FaceDetector</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">handTracker</span> <span class="o">=</span> <span class="n">HandTracker</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Sherlock.read"><a class="viewcode-back" href="../../index.html#sherlock.Sherlock.read">[docs]</a>	<span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the next frame from the video-stream.</span>
+
+<span class="sd">        :returns: the next frame</span>
+<span class="sd">        :rtype: 3-channel matrix </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+		<span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">video</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span></div>
+
+<div class="viewcode-block" id="Sherlock.getHand"><a class="viewcode-back" href="../../index.html#sherlock.Sherlock.getHand">[docs]</a>	<span class="k">def</span> <span class="nf">getHand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a hand object for the current frame containing hand</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        :returns: hand object</span>
+<span class="sd">        :rtype: Hand </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handTracker</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sherlock.getFace"><a class="viewcode-back" href="../../index.html#sherlock.Sherlock.getFace">[docs]</a>	<span class="k">def</span> <span class="nf">getFace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a face object for the current frame containing face</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        :returns: face object</span>
+<span class="sd">        :rtype: Face </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faceDetector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Sherlock.getFrame"><a class="viewcode-back" href="../../index.html#sherlock.Sherlock.getFrame">[docs]</a>	<span class="k">def</span> <span class="nf">getFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the current frame.</span>
+
+<span class="sd">        :returns: the current frame</span>
+<span class="sd">        :rtype: 3-channel matrix </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Sherlock 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, LaunchPad.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
+    </div>
+  </body>
+</html>
