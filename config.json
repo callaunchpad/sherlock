@@ -13,8 +13,34 @@
 	"num_prepreocess_threads":,
 
 	"num_epoch":,
+	"learning_rate":,
+	"optimizer":,
+	"train_log_frequency":,
+	"eval_metric":,
 	
 	"architecture": {
-
+		"conv1": {
+			"num_filter":,
+			"filter_size":,
+			"pool_filter_size":,
+			"act_type":,
+			"pool_type":,
+			"pool_stride":
+		},
+		"conv2": {
+			"num_filter":,
+			"filter_size":,
+			"pool_filter_size":,
+			"act_type":,
+			"pool_type":,
+			"pool_stride":
+		},
+		"fc1": {
+			"num_hidden":,
+			"act_type"
+		},
+		"fc2": {
+			"num_hidden":
+		}
 	}
 }

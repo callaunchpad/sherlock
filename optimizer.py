@@ -16,8 +16,6 @@ def read_data_params(self, cfg):
 	from input dictionary '''
 	self.logger.info("Reading data params")
 
-	self.architecture = self.cfg['architecture']
-
 	self.dataset_dir = self.cfg['dataset_dir']
 	self.model_dir = self.cfg['model_dir']
 	self.im_width = self.cfg['im_width']
@@ -36,6 +34,8 @@ def read_data_params(self, cfg):
 	self.train_log_frequency = self.cfg['train_log_frequency']
 	self.eval_metric = self.eval_metric['eval_metric']
 
+	self.architecture = self.cfg['architecture']
+
 	self.conv1_num_filter = self.architecture['conv1']['num_filter']
 	self.conv1_filter_size = self.architecture['conv1']['filter_size']
 	self.conv1_pool_filter_size = self.architecture['conv1']['pool_filter_size']
@@ -50,10 +50,10 @@ def read_data_params(self, cfg):
 	self.conv2_pool_type = self.architecture['conv2']['pool_type']
 	self.conv2_pool_stride = self.architecture['conv2']['pool_stride']
 
-	self.fc1_num_hidden = self.architecture['fc1']['_num_hidden']
-	self.fc1_act_type = self.architecture['fc1']['_act_type']
+	self.fc1_num_hidden = self.architecture['fc1']['num_hidden']
+	self.fc1_act_type = self.architecture['fc1']['act_type']
 
-	self.fc2_num_hidden = self.architecture['fc2']['_num_hidden']
+	self.fc2_num_hidden = self.architecture['fc2']['num_hidden']
 
 
 def setup(self, config):
