@@ -67,31 +67,31 @@ def setup_data_iters(self):
 	self.logger.info("Setting up data iterators")
 	self.train_iter = mx.io.ImageRecordIter(
     # Dataset Parameter, indicating the data file, please check the data is already there
-    path_imgrec=os.path.join(self.dataset_dir, 'train.rec'),
+		path_imgrec=os.path.join(self.dataset_dir, 'train.rec'),
     # Dataset Parameter, indicating the image size after preprocessing
-    data_shape=(self.im_channels, self.im_width, self.im_height),
+		data_shape=(self.im_channels, self.im_width, self.im_height),
     # Batch Parameter, tells how many images in a batch
-    batch_size=self.train_batch_size,
+		batch_size=self.train_batch_size,
     # Augmentation Parameter, randomly shuffle the data
-    shuffle=True,
+		shuffle=True,
     # Backend Parameter, preprocessing thread number
-    preprocess_threads=self.num_preprocess_threads,
+		preprocess_threads=self.num_preprocess_threads,
     # Backend Parameter, prefetch buffer size
-    prefetch_buffer=1)
+		prefetch_buffer=1)
 
     self.val_iter = mx.io.ImageRecordIter(
     # Dataset Parameter, indicating the data file, please check the data is already there
-    path_imgrec=os.path.join(self.dataset_dir, 'val.rec'),
+    	path_imgrec=os.path.join(self.dataset_dir, 'val.rec'),
     # Dataset Parameter, indicating the image size after preprocessing
-    data_shape=(self.im_channels, self.im_width, self.im_height),
+    	data_shape=(self.im_channels, self.im_width, self.im_height),
     # Batch Parameter, tells how many images in a batch
-    batch_size=self.val_batch_size,
+    	batch_size=self.val_batch_size,
     # Augmentation Parameter, randomly shuffle the data
-    shuffle=True,
+    	shuffle=True,
     # Backend Parameter, preprocessing thread number
-    preprocess_threads=self.num_preprocess_threads,
+    	preprocess_threads=self.num_preprocess_threads,
     # Backend Parameter, prefetch buffer size
-    prefetch_buffer=1)
+    	prefetch_buffer=1)
 
 def build_square_filter(self, size):
 	return (size, size)
@@ -180,13 +180,15 @@ def save_and_exit(self):
 	self.model.save(save_dir, iteration)
 	exit(0)
 
-def __main__():
+
+# main
+if __name__ == "__main__":
 	''' main run loop '''
 	self.logger = logging.getLogger('optimizer')
 	self.logger.setLevel(logging.INFO)
 	self.random_generator = np.random.RandomState(SEED)
 	self.logger.info("Beginning setup for optimization")
-	config_filename = "config.json"
+	config_filename = "cfg/tools/foodcnn_config.json"
 	with open(config_filename) as data_file:
 		self.config_file = json.load(data_file)
 	self.setup(self.config_file)  
