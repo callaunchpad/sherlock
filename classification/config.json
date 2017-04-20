@@ -1,46 +1,46 @@
 {
-	"dataset_dir":,
-	"model_dir":,
+	"dataset_dir":0,
+	"model_dir":0,
 
-	"im_width":,
-	"im_height":,
-	"im_channels":,
+	"im_width":0,
+	"im_height":0,
+	"im_channels":0,
 
-	"train_batch_size":,
-	"val_batch_size":,
+	"train_batch_size":0,
+	"val_batch_size":0,
 
-	"num_gpus":,
-	"num_prepreocess_threads":,
+	"num_gpus":0,
+	"num_preprocess_threads":0,
 
-	"num_epoch":,
-	"learning_rate":,
-	"optimizer":,
-	"train_log_frequency":,
-	"eval_metric":,
+	"num_epoch":0,
+	"learning_rate":0,
+	"optimizer":0,
+	"train_log_frequency":0,
+	"eval_metric":0,
 	
 	"architecture": {
 		"conv1": {
-			"num_filter":,
-			"filter_size":,
-			"pool_filter_size":,
-			"act_type":,
-			"pool_type":,
-			"pool_stride":
+			"num_filter":0,
+			"filter_size":0,
+			"pool_filter_size":0,
+			"act_type":0,
+			"pool_type":0,
+			"pool_stride":0
 		},
 		"conv2": {
-			"num_filter":,
-			"filter_size":,
-			"pool_filter_size":,
-			"act_type":,
-			"pool_type":,
-			"pool_stride":
+			"num_filter":0,
+			"filter_size":0,
+			"pool_filter_size":0,
+			"act_type":0,
+			"pool_type":0,
+			"pool_stride":0
 		},
 		"fc1": {
-			"num_hidden":,
-			"act_type"
+			"num_hidden":0,
+			"act_type":0
 		},
 		"fc2": {
-			"num_hidden":
+			"num_hidden":0
 		}
 	}
 }
